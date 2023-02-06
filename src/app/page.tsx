@@ -1,8 +1,11 @@
 "use client"
 import React, { useEffect, useCallback } from "react";
 import { UserType } from "@/@types/utils";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function useForm(propsForm: { initialValues: any; }) {
 	const [values, setValues] = React.useState(propsForm.initialValues);
@@ -17,6 +20,16 @@ function useForm(propsForm: { initialValues: any; }) {
 				[name]: value
 			});
 		},
+		handleEdit: (item: UserType) => {
+			setValues({
+				...values,
+				cdu_uid: item.ID,
+				cdu_nome: item.NOME,
+				cdu_email: item.EMAIL,
+				cdu_phone: item.FONE,
+				cdu_date: new Date(item.DATA_NASCIMENTO).toISOString().substring(0, 10)
+			});
+		},
 		clearForm: () => {
 			setValues({});
 		}
@@ -25,14 +38,12 @@ function useForm(propsForm: { initialValues: any; }) {
 
 function Home() {
 	const [users, setUsers] = React.useState<UserType[]>([]);
-	const [onEdit, setOnEdit] = React.useState<UserType>();
+	const [onEdit, setOnEdit] = React.useState<boolean>(false);
 
 	const getUsers = useCallback(async () => {
 		try {
 			const response = await axios.get("http://localhost:3000/api/listUsers");
-			console.log(response.data);
 			setUsers(response.data);
-			toast.success("Usuários carregados com sucesso!");
 		} catch (error) {
 			toast.error("Erro ao carregar usuários");
 		}
@@ -59,42 +70,62 @@ function Home() {
 			return toast.warn("Preencha todos os campos!");
 		}
 
-		if(onEdit) {
-			await axios
-				.put("http://localhost:3000/api/updateUser/"+onEdit.ID, {
-					nome: formCadastro.values.cdu_nome,
-					email: formCadastro.values.cdu_email,
-					fone: formCadastro.values.cdu_phone,
-					data_nascimento: formCadastro.values.cdu_date
-				})
-				.then(({ data }) => toast.success(data))
-				.catch(({ data }) => toast.error(data));
-		} else {
-			await axios
-				.post("http://localhost:3000/api/addUser", {
-					nome: formCadastro.values.cdu_nome,
-					email: formCadastro.values.cdu_email,
-					fone: formCadastro.values.cdu_phone,
-					data_nascimento: formCadastro.values.cdu_date
-				})
-				.then(({ data }) => toast.success(data))
-				.catch(({ data }) => toast.error(data));
+		if(onEdit)
+		{
+			await axios.put("http://localhost:3000/api/updateUser", {
+				uid: formCadastro.values.cdu_uid,
+				nome: formCadastro.values.cdu_nome,
+				email: formCadastro.values.cdu_email,
+				fone: formCadastro.values.cdu_phone,
+				data_nascimento: formCadastro.values.cdu_date
+			})
+			.then(({ data }) => {
+				toast.success(data.message);
+				setOnEdit(false);
+				formCadastro.clearForm();
+				getUsers();
+			})
+			.catch(({ data }) => {
+				toast.error(data.error);
+				setOnEdit(false);
+			});
+		} 
+		else
+		{
+			await axios.post("http://localhost:3000/api/addUser", {
+				nome: formCadastro.values.cdu_nome,
+				email: formCadastro.values.cdu_email,
+				fone: formCadastro.values.cdu_phone,
+				data_nascimento: formCadastro.values.cdu_date
+			})
+			.then(({ data }) => {
+				toast.success(data.message);
+				formCadastro.clearForm();
+				getUsers();
+			})
+			.catch(({ data }) => {
+				toast.error(data.error)
+			});
 		}
-
-		setOnEdit(undefined);
-		formCadastro.clearForm();
-		getUsers();
 	}
+
+	const handleDelete = async (id: number) => {
+		await axios.delete("http://localhost:3000/api/deleteUser", {
+			data: { uid: id }
+		})
+		.then(({ data }) => {
+			toast.success(data.message);
+			console.log('Sucesso: ', data.message);
+			getUsers();
+		})
+		.catch(({ data }) => {
+			toast.error(data.error);
+			console.log('Erro: ', data.error);
+		});
+	};
 
 	useEffect(() => {
 		getUsers();
-
-		if(onEdit) {
-			formCadastro.values.cdu_nome = onEdit.NOME;
-			formCadastro.values.cdu_email = onEdit.EMAIL;
-			formCadastro.values.cdu_phone = onEdit.FONE;
-			formCadastro.values.cdu_date = onEdit.DATA_NASCIMENTO;	
-		}
 	}, []);
 
 	return (
@@ -116,7 +147,7 @@ function Home() {
 									name="cdu_nome" 
 									className="cdu-input" 
 									required
-									value={formCadastro.values.cdu_nome}
+									value={formCadastro.values.cdu_nome || ""}
 									onChange={formCadastro.handleChange}
 								/>
 							</div>
@@ -127,7 +158,7 @@ function Home() {
 									name="cdu_email" 
 									className="cdu-input" 
 									required 
-									value={formCadastro.values.cdu_email}
+									value={formCadastro.values.cdu_email || ""}
 									onChange={formCadastro.handleChange}
 								/>
 							</div>
@@ -138,7 +169,7 @@ function Home() {
 									name="cdu_phone" 
 									className="cdu-input" 
 									required 
-									value={formCadastro.values.cdu_phone}
+									value={formCadastro.values.cdu_phone || ""}
 									onChange={formCadastro.handleChange}
 								/>
 							</div>
@@ -149,12 +180,12 @@ function Home() {
 									name="cdu_date" 
 									className="cdu-input" 
 									required 
-									value={formCadastro.values.cdu_date}
+									value={formCadastro.values.cdu_date || ""}
 									onChange={formCadastro.handleChange}
 								/>
 							</div>
 							<div className="cdu-form--group submit">
-								<button type="submit" name="cdu_submit" className="cdu-submit">Salvar</button>
+								<input type="submit" name="cdu_submit" value="Salvar" className="cdu-submit" />
 							</div>
 						</form>
 					</div>
@@ -165,21 +196,29 @@ function Home() {
 						<table className="cdu-table">
 							<thead>
 								<tr>
-									<th>ID</th>
 									<th>Nome</th>
 									<th>Email</th>
 									<th>Telefone</th>
-									<th>Data de Nascimento</th>
+									<th>Ações</th>
 								</tr>
 							</thead>
 							<tbody>
 								{users.map((item, i) => (
 									<tr key={i}>
-										<td>{item.ID}</td>
-										<td>{item.NOME}</td>
-										<td>{item.EMAIL}</td>
-										<td>{item.FONE}</td>
-										<td>{item.DATA_NASCIMENTO}</td>
+										<td style={{padding: '10px'}}>{item.NOME}</td>
+										<td style={{padding: '10px'}}>{item.EMAIL}</td>
+										<td style={{padding: '10px'}}>{item.FONE}</td>
+										<td style={{padding: '10px', display: 'flex', alignItems: 'center', gap: '20px'}}>
+											<FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(item.ID)} style={{cursor: 'pointer'}} />
+											<FontAwesomeIcon 
+												icon={faPenToSquare} 
+												onClick={() => {
+													setOnEdit(true);
+													formCadastro.handleEdit(item);
+												}} 
+												style={{cursor: 'pointer'}} 
+											/>
+										</td>
 									</tr>
 								))}
 							</tbody>
@@ -187,6 +226,8 @@ function Home() {
 					</div>
 				</div>
 			</main>
+
+			<ToastContainer autoClose={3000} position={"top-right"} />
 		</>
 	)
 }

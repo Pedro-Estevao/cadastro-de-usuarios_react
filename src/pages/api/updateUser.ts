@@ -3,11 +3,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { conn } from '@/config/database';
 
 export default function updateUser(req: NextApiRequest, res: NextApiResponse) {
-	const { id, nome, email, fone, data_nascimento } = req.body;
+	const { uid, nome, email, fone, data_nascimento } = req.body;
 
 	const query = "UPDATE usuarios SET `NOME` = ?, `EMAIL` = ?, `FONE` = ?, `DATA_NASCIMENTO` = ? WHERE `ID` = ?";
 
-	conn.query(query, [nome, email, fone, data_nascimento, id], (err, results) => {
+	conn.query(query, [nome, email, fone, data_nascimento, uid], (err, results) => {
 		if (err) {
 			return res.status(500).json({ error: err.message });
 		}
