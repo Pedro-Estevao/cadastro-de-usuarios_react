@@ -1,11 +1,14 @@
 "use client"
 import React, { useEffect, useCallback } from "react";
 import { UserType } from "@/@types/utils";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faPenToSquare, faPlus, faCheck, faCancel } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import DeleteModal from "@/components/ModalDelete";
 
 function useForm(propsForm: { initialValues: any; }) {
 	const [values, setValues] = React.useState(propsForm.initialValues);
@@ -39,6 +42,8 @@ function useForm(propsForm: { initialValues: any; }) {
 function Home() {
 	const [users, setUsers] = React.useState<UserType[]>([]);
 	const [onEdit, setOnEdit] = React.useState<boolean>(false);
+	const [deleteModal, setDeleteModal] = React.useState(false);
+	const [userDelete, setUserDelete] = React.useState(Number);
 
 	const getUsers = useCallback(async () => {
 		try {
@@ -124,6 +129,16 @@ function Home() {
 		});
 	};
 
+	const handleDeleteModal = () => {
+		handleDelete(userDelete);
+		setDeleteModal(!deleteModal);
+	}
+
+	const toggleDeleteModal = (id: number) => {
+		setDeleteModal(!deleteModal);
+		setUserDelete(id);
+	}
+
 	useEffect(() => {
 		getUsers();
 	}, []);
@@ -141,40 +156,39 @@ function Home() {
 					<div className="cdu-card--body card-body">
 						<form name="cdu_form" className="cdu-form" action="#" method="POST" onSubmit={handleSubmit}>
 							<div className="cdu-form--group name">
-								<label>Nome</label>
 								<input 
 									type="text" 
 									name="cdu_nome" 
 									className="cdu-input" 
+									placeholder="Nome completo"
 									required
 									value={formCadastro.values.cdu_nome || ""}
 									onChange={formCadastro.handleChange}
 								/>
 							</div>
 							<div className="cdu-form--group email">
-								<label>E-mail</label>
 								<input 
 									type="email" 
 									name="cdu_email" 
-									className="cdu-input" 
+									className="cdu-input"
+									placeholder="E-mail"
 									required 
 									value={formCadastro.values.cdu_email || ""}
 									onChange={formCadastro.handleChange}
 								/>
 							</div>
 							<div className="cdu-form--group phone">
-								<label>Telefone</label>
 								<input 
 									type="text" 
 									name="cdu_phone" 
-									className="cdu-input" 
+									className="cdu-input"
+									placeholder="Telefone"
 									required 
 									value={formCadastro.values.cdu_phone || ""}
 									onChange={formCadastro.handleChange}
 								/>
 							</div>
 							<div className="cdu-form--group date">
-								<label>Data de Nascimento</label>
 								<input 
 									type="date" 
 									name="cdu_date" 
@@ -185,7 +199,28 @@ function Home() {
 								/>
 							</div>
 							<div className="cdu-form--group submit">
-								<input type="submit" name="cdu_submit" value="Salvar" className="cdu-submit" />
+								<button
+									type="submit"
+									name="cdu_submit"
+									className={`cdu-submit ${onEdit ? "edit" : "add"}`}
+								>
+									<FontAwesomeIcon icon={onEdit ? faCheck : faPlus} width={23} height={23} />
+									<span className="cdu-submit--text">{onEdit ? "Editar" : "Adicionar"}</span>
+								</button>
+								{onEdit && (
+									<button
+										type="reset"
+										name="cdu_cancel"
+										className="cdu-submit cancel"
+										onClick={() => {
+											setOnEdit(false);
+											formCadastro.clearForm();
+										}}
+									>
+										<FontAwesomeIcon icon={faCancel} />
+										<span className="cdu-submit--text">Cancelar</span>
+									</button>
+								)}
 							</div>
 						</form>
 					</div>
@@ -193,41 +228,73 @@ function Home() {
 
 				<div className="cdu-card card">
 					<div className="cdu-card--body card-body">
-						<table className="cdu-table">
-							<thead>
-								<tr>
-									<th>Nome</th>
-									<th>Email</th>
-									<th>Telefone</th>
-									<th>Ações</th>
-								</tr>
-							</thead>
-							<tbody>
-								{users.map((item, i) => (
-									<tr key={i}>
-										<td style={{padding: '10px'}}>{item.NOME}</td>
-										<td style={{padding: '10px'}}>{item.EMAIL}</td>
-										<td style={{padding: '10px'}}>{item.FONE}</td>
-										<td style={{padding: '10px', display: 'flex', alignItems: 'center', gap: '20px'}}>
-											<FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(item.ID)} style={{cursor: 'pointer'}} />
-											<FontAwesomeIcon 
-												icon={faPenToSquare} 
-												onClick={() => {
-													setOnEdit(true);
-													formCadastro.handleEdit(item);
-												}} 
-												style={{cursor: 'pointer'}} 
-											/>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
+						<div className="cdu-table__container">
+							<div className="cdu-table__container-scroll">
+								<div className="cdu-table__head">
+									<table className="cdu-table">
+										<thead>
+											<tr>
+												<th>Nome</th>
+												<th>Email</th>
+												<th>Telefone</th>
+												<th>Dt. Nascimento</th>
+												<th>Ações</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+								<PerfectScrollbar
+									className="cdu-table__body"
+									options={{
+										wheelPropagation: true,
+										wheelSpeed: 0.25,
+									}}
+								>
+									<table className="cdu-table">
+										<tbody>
+											{users.map((item, i) => (
+												<tr key={i}>
+													<td><span className="table-text">{item.NOME}</span></td>
+													<td><span className="table-text">{item.EMAIL}</span></td>
+													<td><span className="table-text">{item.FONE}</span></td>
+													<td><span className="table-text">{item.DATA_NASCIMENTO}</span></td>
+													<td>
+														<FontAwesomeIcon icon={faTrash} onClick={() => toggleDeleteModal(item.ID)} style={{cursor: 'pointer'}} />
+														<FontAwesomeIcon 
+															icon={faPenToSquare} 
+															onClick={() => {
+																setOnEdit(true);
+																formCadastro.handleEdit(item);
+															}} 
+															style={{cursor: 'pointer'}} 
+														/>
+													</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</PerfectScrollbar>
+							</div>
+						</div>
 					</div>
 				</div>
 			</main>
 
+			<footer className="cdu-footer container">
+				<div className="cdu-footer--content">
+					<p className="footer-content--text">Desenvolvido por <a href="" target="_blank">Pedro Estevão</a></p>
+				</div>
+			</footer>
+
 			<ToastContainer autoClose={3000} position={"top-right"} />
+
+			<DeleteModal 
+				title="Excluir usuário"
+				message="Tem certeza que deseja excluir este usuário?"
+				show={deleteModal}
+				toggle={() => setDeleteModal(!deleteModal)}
+				onDeleteClick={handleDeleteModal}
+			/>
 		</>
 	)
 }

@@ -20,7 +20,9 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   react-is: ^18.2.0
+  react-perfect-scrollbar: ^1.5.8
   react-toastify: ^9.1.1
+  reactstrap: ^9.1.5
   remixicon: ^2.5.0
   sass: ^1.58.0
   styled-components: ^5.3.6
@@ -46,7 +48,9 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-is: 18.2.0
+  react-perfect-scrollbar: 1.5.8_biqbaboplfbrettd7655fr4n2y
   react-toastify: 9.1.1_biqbaboplfbrettd7655fr4n2y
+  reactstrap: 9.1.5_biqbaboplfbrettd7655fr4n2y
   remixicon: 2.5.0
   sass: 1.58.0
   styled-components: 5.3.6_7i5myeigehqah43i5u7wbekgba
@@ -461,6 +465,10 @@ packages:
       picocolors: 1.0.0
       tiny-glob: 0.2.9
       tslib: 2.5.0
+    dev: false
+
+  /@popperjs/core/2.11.6:
+    resolution: {integrity: sha512-50/17A98tWUfQ176raKiOGXuYpLyyVMkxxG6oylzL3BPOlA6ADGdK7EYunSa4I064xerltq9TGXs8HmOk5E+vw==}
     dev: false
 
   /@rushstack/eslint-patch/1.2.0:
@@ -898,6 +906,10 @@ packages:
       fsevents: 2.3.2
     dev: false
 
+  /classnames/2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
+    dev: false
+
   /client-only/0.0.1:
     resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
     dev: false
@@ -1123,6 +1135,13 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: 2.0.3
+    dev: false
+
+  /dom-helpers/5.2.1:
+    resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
+    dependencies:
+      '@babel/runtime': 7.20.13
+      csstype: 3.1.1
     dev: false
 
   /ee-first/1.1.1:
@@ -2542,6 +2561,10 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
+  /perfect-scrollbar/1.5.5:
+    resolution: {integrity: sha512-dzalfutyP3e/FOpdlhVryN4AJ5XDVauVWxybSkLZmakFE2sS3y3pc4JnSprw8tGmHvkaG5Edr5T7LBTZ+WWU2g==}
+    dev: false
+
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
     dev: false
@@ -2630,12 +2653,42 @@ packages:
       scheduler: 0.23.0
     dev: false
 
+  /react-fast-compare/3.2.0:
+    resolution: {integrity: sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==}
+    dev: false
+
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+    dev: false
+
+  /react-perfect-scrollbar/1.5.8_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-bQ46m70gp/HJtiBOF3gRzBISSZn8FFGNxznTdmTG8AAwpxG1bJCyn7shrgjEvGSQ5FJEafVEiosY+ccER11OSA==}
+    peerDependencies:
+      react: '>=16.3.3'
+      react-dom: '>=16.3.3'
+    dependencies:
+      perfect-scrollbar: 1.5.5
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /react-popper/2.3.0_r6q5zrenym2zg7je7hgi674bti:
+    resolution: {integrity: sha512-e1hj8lL3uM+sgSR4Lxzn5h1GxBlpa4CQz0XLF8kx4MDrDRWY0Ena4c97PUeSX9i5W3UAfDP0z0FXCTQkoXUl3Q==}
+    peerDependencies:
+      '@popperjs/core': ^2.0.0
+      react: ^16.8.0 || ^17 || ^18
+      react-dom: ^16.8.0 || ^17 || ^18
+    dependencies:
+      '@popperjs/core': 2.11.6
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-fast-compare: 3.2.0
+      warning: 4.0.3
     dev: false
 
   /react-toastify/9.1.1_biqbaboplfbrettd7655fr4n2y:
@@ -2649,11 +2702,41 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
+  /react-transition-group/4.4.5_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==}
+    peerDependencies:
+      react: '>=16.6.0'
+      react-dom: '>=16.6.0'
+    dependencies:
+      '@babel/runtime': 7.20.13
+      dom-helpers: 5.2.1
+      loose-envify: 1.4.0
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /react/18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
+    dev: false
+
+  /reactstrap/9.1.5_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-w4pnRW/z0piLElgSdypp07mSJVOQIN1tE3DQdsfmpvvUHEzYsjfJHSJkIL26I38m/ACCNXfNnyFSsq0c6U/snQ==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@babel/runtime': 7.20.13
+      '@popperjs/core': 2.11.6
+      classnames: 2.3.2
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-popper: 2.3.0_r6q5zrenym2zg7je7hgi674bti
+      react-transition-group: 4.4.5_biqbaboplfbrettd7655fr4n2y
     dev: false
 
   /readdirp/3.6.0:
@@ -3104,6 +3187,12 @@ packages:
   /vary/1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+    dev: false
+
+  /warning/4.0.3:
+    resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
+    dependencies:
+      loose-envify: 1.4.0
     dev: false
 
   /which-boxed-primitive/1.0.2:
