@@ -18,6 +18,7 @@ specifiers:
   mysql2: ^3.1.0
   next: 13.1.4
   react: 18.2.0
+  react-content-loader: ^6.2.0
   react-dom: 18.2.0
   react-is: ^18.2.0
   react-perfect-scrollbar: ^1.5.8
@@ -46,6 +47,7 @@ dependencies:
   mysql2: 3.1.0
   next: 13.1.4_5mhhrw5dq6gnbuirj2awdzvyuu
   react: 18.2.0
+  react-content-loader: 6.2.0_react@18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-is: 18.2.0
   react-perfect-scrollbar: 1.5.8_biqbaboplfbrettd7655fr4n2y
@@ -2641,6 +2643,15 @@ packages:
       http-errors: 2.0.0
       iconv-lite: 0.4.24
       unpipe: 1.0.0
+    dev: false
+
+  /react-content-loader/6.2.0_react@18.2.0:
+    resolution: {integrity: sha512-r1dI6S+uHNLW68qraLE2njJYOuy6976PpCExuCZUcABWbfnF3FMcmuESRI8L4Bj45wnZ7n8g71hkPLzbma7/Cw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16.0.0'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-dom/18.2.0_react@18.2.0:

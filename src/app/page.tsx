@@ -44,11 +44,13 @@ function Home() {
 	const [onEdit, setOnEdit] = React.useState<boolean>(false);
 	const [deleteModal, setDeleteModal] = React.useState(false);
 	const [userDelete, setUserDelete] = React.useState(Number);
+	const [loader, setLoader] = React.useState<boolean>(true);
 
 	const getUsers = useCallback(async () => {
 		try {
 			const response = await axios.get("http://localhost:3000/api/listUsers");
 			setUsers(response.data);
+			// setLoader(false);
 		} catch (error) {
 			toast.error("Erro ao carregar usuários");
 		}
@@ -228,8 +230,8 @@ function Home() {
 
 				<div className="cdu-card card">
 					<div className="cdu-card--body card-body">
-						<div className="cdu-table__container">
-							<div className="cdu-table__container-scroll">
+						<div className={`cdu-table__container ${loader && 'loading'}`}>
+							<div className={`cdu-table__container-scroll ${loader && 'loading'}`}>
 								<div className="cdu-table__head">
 									<table className="cdu-table">
 										<thead>
@@ -252,25 +254,37 @@ function Home() {
 								>
 									<table className="cdu-table">
 										<tbody>
-											{users.map((item, i) => (
-												<tr key={i}>
-													<td><span className="table-text">{item.NOME}</span></td>
-													<td><span className="table-text">{item.EMAIL}</span></td>
-													<td><span className="table-text">{item.FONE}</span></td>
-													<td><span className="table-text">{item.DATA_NASCIMENTO}</span></td>
-													<td>
-														<FontAwesomeIcon icon={faTrash} onClick={() => toggleDeleteModal(item.ID)} style={{cursor: 'pointer'}} />
-														<FontAwesomeIcon 
-															icon={faPenToSquare} 
-															onClick={() => {
-																setOnEdit(true);
-																formCadastro.handleEdit(item);
-															}} 
-															style={{cursor: 'pointer'}} 
-														/>
+											{loader ? (
+												<tr className="data-loading">
+													<td colSpan={5}>
+														<span className="loader" />
 													</td>
 												</tr>
-											))}
+											) : (
+												(users.length !== 0) ? (users.map((item, i) => (
+													<tr key={i}>
+														<td><span className="table-text">{item.NOME}</span></td>
+														<td><span className="table-text">{item.EMAIL}</span></td>
+														<td><span className="table-text">{item.FONE}</span></td>
+														<td><span className="table-text">{item.DATA_NASCIMENTO}</span></td>
+														<td>
+															<FontAwesomeIcon icon={faTrash} onClick={() => toggleDeleteModal(item.ID)} style={{cursor: 'pointer'}} />
+															<FontAwesomeIcon 
+																icon={faPenToSquare} 
+																onClick={() => {
+																	setOnEdit(true);
+																	formCadastro.handleEdit(item);
+																}} 
+																style={{cursor: 'pointer'}} 
+															/>
+														</td>
+													</tr>
+												))) : (
+													<tr className="noInfo">
+														<td colSpan={5} className="table-text">Nenhum usuário cadastrado</td>
+													</tr>
+												)
+											)}
 										</tbody>
 									</table>
 								</PerfectScrollbar>
@@ -280,9 +294,9 @@ function Home() {
 				</div>
 			</main>
 
-			<footer className="cdu-footer container">
-				<div className="cdu-footer--content">
-					<p className="footer-content--text">Desenvolvido por <a href="" target="_blank">Pedro Estevão</a></p>
+			<footer className="cdu-footer">
+				<div className="cdu-footer--content container">
+					<p className="footer-content--text">Desenvolvido por <a href="" target="_blank">Pedro Estevão</a><span className="loader" /></p>
 				</div>
 			</footer>
 
